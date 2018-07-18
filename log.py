@@ -2,7 +2,7 @@ import inspect
 import threading
 
 ADD_TAGS = False
-DEBUG = False
+DEBUG = True
 
 
 def log(*args, **kwargs):
