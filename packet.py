@@ -6,6 +6,7 @@ PACKET_ID_FUNC_CALL_ERROR = 3
 STREAM_TERMINATING_BYTE = b'\end'
 STREAM_TERMINATING_BYTE_STRING = '\end'
 
+STREAM_TERMINATING_BYTE_LEN = len(STREAM_TERMINATING_BYTE)
 
 class Packet:
     # If packet data is bytes then assumed that packet_id is embedded else assumed otherwise

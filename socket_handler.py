@@ -42,7 +42,7 @@ class Handler:
 
     # wrapper for packet sending
     def send_packet(self, packet):
-        self._send_packet(packet)
+        self.schedule_outgoing_packet(packet)
         if self.log_coms:
             log("<%s>" % self.self_name, packet, '\n')
 
@@ -56,14 +56,15 @@ class Handler:
     def receive_data(self, buffer_length):
         return self._receive_data(buffer_length)
 
-    def handle_receiving_data(self, initial_data):
-        data = initial_data.decode('utf8')
-        while len(data) < len(packet.STREAM_TERMINATING_BYTE) or data[-len(packet.STREAM_TERMINATING_BYTE):] != packet.STREAM_TERMINATING_BYTE.decode(
-                'utf8'):
-            data += self.receive_data(1).decode('utf8')
+    def handle_receiving_data(self):
+        term_len = packet.STREAM_TERMINATING_BYTE_LEN
+        data = bytes()
 
-        data = data[:-len(packet.STREAM_TERMINATING_BYTE)]
-        data = packet.Packet(str.encode(data))
+        while data[-term_len:] != packet.STREAM_TERMINATING_BYTE:
+            data += self.receive_data(1)
+
+        data = data[:-term_len]
+        data = packet.Packet(data)
 
         if self.log_coms:
             log("<%s>" % self.peer_name, data, '\n')
