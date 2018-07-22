@@ -2,6 +2,7 @@ import time
 
 
 class Timer:
+    __slots__ = ['start_time', 'end_time', 'time_diff']
 
     def __init__(self):
         self.start_time = 0

@@ -8,7 +8,10 @@ STREAM_TERMINATING_BYTE_STRING = '\end'
 
 STREAM_TERMINATING_BYTE_LEN = len(STREAM_TERMINATING_BYTE)
 
+
 class Packet:
+    __slots__ = ['data', 'packet_id']
+
     # If packet data is bytes then assumed that packet_id is embedded else assumed otherwise
     def __init__(self, data, packet_id=-1):
         if isinstance(data, bytes):
@@ -19,9 +22,7 @@ class Packet:
             self.packet_id = packet_id
 
     def export(self):
-        data = self.data
-        data = format(self.packet_id, '016b') + data
-        return self._encode(data + STREAM_TERMINATING_BYTE_STRING)
+        return str.encode(bin(self.packet_id)[2:].zfill(16) + self.data) + STREAM_TERMINATING_BYTE
 
     def get_data(self):
         return self.data

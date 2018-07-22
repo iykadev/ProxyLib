@@ -7,6 +7,7 @@ from log import log
 
 
 class Handler:
+    __slots__ = ['isConnected', 'self_name', 'peer_name', 'conn', 'self_ip', 'self_port', 'peer_ip', 'peer_port', 'call_back', 'call_back_args', 'outgoing_packet_queue', 'log_coms']
 
     def __init__(self, self_name=None, peer_name=None, conn=None, self_ip=None, self_port=None, peer_ip=None, peer_port=None, call_back=None, call_back_args=None, log_coms=False):
         self.isConnected = True;
@@ -60,6 +61,8 @@ class Handler:
         term_len = packet.STREAM_TERMINATING_BYTE_LEN
         data = bytes()
 
+        self.conn.setblocking(False)
+
         while data[-term_len:] != packet.STREAM_TERMINATING_BYTE:
             data += self.receive_data(1)
 
@@ -77,10 +80,10 @@ class Handler:
         return thread
 
     def print_connection_info(self):
-        log('connected to:', self.peer_ip + ":" + str(self.peer_port))
+        log("connected to: <%s>" % self.peer_name, self.peer_ip + ":" + str(self.peer_port))
 
     def print_disconnection_info(self):
-        log("Connection lost with host:", self.peer_ip + ":" + str(self.peer_port))
+        log("Connection lost with: <%s>" % self.peer_name, self.peer_ip + ":" + str(self.peer_port))
 
     def disconnect(self):
         self.conn.shutdown(socket.SHUT_WR)
